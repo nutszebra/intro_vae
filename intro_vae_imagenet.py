@@ -90,7 +90,7 @@ class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
 
-        self.nf = 2
+        self.nf = 32
         self.conv1 = encode_unit(3, self.nf)
         self.conv2 = encode_unit(self.nf, 2 * self.nf)
         self.conv3 = encode_unit(2 * self.nf, 4 * self.nf)
@@ -114,7 +114,7 @@ class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
 
-        self.nf = 2
+        self.nf = 32
         self.project = nn.Linear(128, 16 * 8 * self.nf, bias=False)
         self.batch_norm1d = nn.BatchNorm1d(16 * 8 * self.nf)
         self.dconv6 = decode_unit(8 * self.nf, 4 * self.nf)
@@ -156,7 +156,7 @@ def loss_function(x, x_r,
 
 alpha = 0.5
 beta = 0.5
-m = 0.5
+m = 100.0
 
 encoder = Encoder().to(device)
 decoder = Decoder().to(device)
