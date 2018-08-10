@@ -92,8 +92,8 @@ class Encoder(nn.Module):
         self.conv3 = encode_unit(2 * self.nf, 4 * self.nf)
         self.conv4 = encode_unit(4 * self.nf, 8 * self.nf)
         self.conv5 = encode_unit(8 * self.nf, 8 * self.nf)
-        self.fc1 = nn.Linear(64 * 8 * self.nf, 128)
-        self.fc2 = nn.Linear(64 * 8 * self.nf, 128)
+        self.fc1 = nn.Linear(64 * 8 * self.nf, 512)
+        self.fc2 = nn.Linear(64 * 8 * self.nf, 512)
 
     def forward(self, x):
         h = self.conv1(x)
@@ -111,7 +111,7 @@ class Decoder(nn.Module):
         super(Decoder, self).__init__()
 
         self.nf = 32
-        self.project = nn.Linear(128, 16 * 8 * self.nf, bias=False)
+        self.project = nn.Linear(512, 16 * 8 * self.nf, bias=False)
         self.batch_norm1d = nn.BatchNorm1d(16 * 8 * self.nf)
         self.dconv6 = decode_unit(8 * self.nf, 4 * self.nf)
         self.dconv5 = decode_unit(4 * self.nf, 2 * self.nf)
@@ -151,8 +151,8 @@ def loss_function(x, x_r,
 
 
 alpha = 0.5
-beta = 0.5
-m = 100.0
+beta = 0.05
+m = 120.0
 
 encoder = Encoder().to(device)
 decoder = Decoder().to(device)
@@ -272,7 +272,7 @@ for epoch in range(1, args.epochs + 1):
     train(epoch)
     test(epoch)
     with torch.no_grad():
-        sample = torch.randn(64, 128).to(device)
+        sample = torch.randn(64, 512).to(device)
         sample = decoder(sample).cpu()
         sample = sample.view(64, 3, 256, 256)
         save_image(sample,
