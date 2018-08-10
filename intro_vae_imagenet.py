@@ -34,17 +34,13 @@ device = torch.device("cuda" if args.cuda else "cpu")
 kwargs = {'num_workers': 4,
           'pin_memory': True}
 # load dataset
-normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225])
 train_transform = transforms.Compose([transforms.RandomSizedCrop(256),
                                       transforms.RandomHorizontalFlip(),
                                       transforms.ToTensor(),
-                                      normalize,
                                       ])
 test_transform = transforms.Compose([transforms.Scale(256),
                                      transforms.CenterCrop(256),
                                      transforms.ToTensor(),
-                                     normalize,
                                      ])
 train_dataset = datasets.ImageFolder(args.train_path,
                                      transform=train_transform)
@@ -134,7 +130,7 @@ class Decoder(nn.Module):
         h = self.dconv3(h)
         h = self.dconv2(h)
         h = self.dconv1(h)
-        return h
+        return F.sigmoid(h)
 
 
 def l_reg(mu, std):
@@ -278,9 +274,6 @@ for epoch in range(1, args.epochs + 1):
     with torch.no_grad():
         sample = torch.randn(64, 128).to(device)
         sample = decoder(sample).cpu()
-        sample = sample.view(64, 3, 266, 256)
-        import IPython
-        IPython.embed()
-
+        sample = sample.view(64, 3, 256, 256)
         save_image(sample,
                    'results/sample_' + str(epoch) + '.png')
