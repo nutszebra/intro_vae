@@ -28,12 +28,17 @@ torch.manual_seed(args.seed)
 device = torch.device("cuda" if args.cuda else "cpu")
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
+trans = transforms.Compose([
+            transforms.Resize(64),
+            transforms.ToTensor()
+            ])
+train_dataset = SAT_Dataset('sat.mat', phase='train', transform=None)
+test_dataset = 
 train_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('../data', train=True, download=True,
-                   transform=transforms.ToTensor()),
+    datasets.LSUN('data', classes='train', transform=trans),
     batch_size=args.batch_size, shuffle=True, **kwargs)
 test_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('../data', train=False, transform=transforms.ToTensor()),
+    datasets.LSUN('data', classes='val', transform=trans),
     batch_size=args.batch_size, shuffle=True, **kwargs)
 
 
