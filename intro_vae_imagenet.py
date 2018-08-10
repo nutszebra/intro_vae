@@ -152,7 +152,7 @@ def loss_function(x, x_r,
 
 alpha = 0.5
 beta = 0.05
-m = 120.0
+m = 10.0
 
 encoder = Encoder().to(device)
 decoder = Decoder().to(device)
