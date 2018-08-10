@@ -147,8 +147,6 @@ def loss_function(x, x_r,
         l_e_adv = l_reg(z_mu, z_std) + alpha * (F.relu(m - l_reg(z_r_detach_mu, z_r_detach_std)) + F.relu(m - l_reg(z_pp_detach_mu, z_pp_detach_std)))
         l_g_adv = alpha * (l_reg(z_r_mu, z_r_std) + l_reg(z_pp_mu, z_pp_std))
         loss = torch.mean(l_e_adv + l_g_adv + beta * l_ae)
-        import IPython
-        IPython.embed()
         return loss
 
 
