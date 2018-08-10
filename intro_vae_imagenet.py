@@ -229,7 +229,6 @@ def test(epoch):
         for i, (data, _) in enumerate(test_loader):
             data = data.to(device)
             x = data
-            x = x.reshape(-1, 784)
 
             z_mu, z_logvar = encoder(x)
             z_std = torch.exp(0.5 * z_logvar)
@@ -277,7 +276,11 @@ for epoch in range(1, args.epochs + 1):
     train(epoch)
     test(epoch)
     with torch.no_grad():
-        sample = torch.randn(64, 20).to(device)
+        sample = torch.randn(64, 128).to(device)
         sample = decoder(sample).cpu()
-        save_image(sample.view(64, 1, 28, 28),
+        sample = sample.view(64, 3, 266, 256)
+        import IPython
+        IPython.embed()
+
+        save_image(sample,
                    'results/sample_' + str(epoch) + '.png')
